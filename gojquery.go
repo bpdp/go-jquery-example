@@ -1,9 +1,15 @@
 package main
 
 import (
+
+	// standard pkgs
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+
+	// non standard pkgs
+	"conf"
 )
 
 func handler(w http.ResponseWriter, req *http.Request) {
@@ -26,8 +32,11 @@ func handler(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 
+	var config = conf.ReadConfig("conf/lapmachine.toml")
+
 	http.HandleFunc("/display", handler)
 	http.Handle("/", http.FileServer(http.Dir("assets/")))
-	http.ListenAndServe(":8123", nil)
+	fmt.Println("Serving http request at port " + config.Port)
+	http.ListenAndServe(config.Port, nil)
 
 }
